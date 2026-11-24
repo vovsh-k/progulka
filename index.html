@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кое-что для тебя 💌</title>
+<style>
+:root {
+  --pink: #e86a8a;
+  --pink-soft: #f7cdd8;
+  --cream: #fff7f2;
+  --ink: #4a3b42;
+  --card: #fffdfb;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--ink);
+  background: linear-gradient(160deg, #ffe9ec 0%, #fff3e6 45%, #f3e8ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 48px;
+  overflow-x: hidden;
+  position: relative;
+}
+.bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.bg span {
+  position: absolute;
+  bottom: -60px;
+  opacity: 0;
+  animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: .55; }
+  90% { opacity: .4; }
+  100% { transform: translateY(-115vh) rotate(20deg); opacity: 0; }
+}
+.wrap { position: relative; z-index: 1; width: 100%; max-width: 440px; }
+.dots { display: flex; gap: 7px; justify-content: center; margin-bottom: 16px; }
+.dots span {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--pink-soft);
+  transition: all .25s ease;
+}
+.dots span.filled { background: var(--pink); transform: scale(1.15); }
+.card {
+  width: 100%;
+  background: var(--card);
+  border-radius: 26px;
+  box-shadow: 0 18px 50px rgba(200, 110, 135, .22);
+  padding: 36px 28px 32px;
+  text-align: center;
+  overflow: hidden;
+}
+.page { display: none; }
+.page.active { display: block; animation: pageIn .38s ease; }
+@keyframes pageIn {
+  0% { transform: translateX(26px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+.stamp { font-size: 44px; line-height: 1; }
+h1 {
+  font-size: 27px;
+  font-weight: normal;
+  margin: 14px 0 10px;
+  color: var(--pink);
+}
+.lead { font-size: 16.5px; line-height: 1.55; margin-bottom: 22px; }
+.step-label {
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #b78a97;
+  margin: 20px 0 10px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chip {
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1.5px solid var(--pink-soft);
+  border-radius: 999px;
+  padding: 9px 15px;
+  cursor: pointer;
+  transition: all .18s ease;
+}
+.chip:hover { border-color: var(--pink); transform: translateY(-1px); }
+.chip.selected {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(232, 106, 138, .35);
+}
+.chip small { display: block; font-size: 11.5px; opacity: .75; margin-top: 2px; }
+input[type=text] {
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--pink-soft);
+  border-radius: 14px;
+  background: var(--cream);
+  outline: none;
+}
+input[type=text]:focus { border-color: var(--pink); }
+.hidden { display: none !important; }
+.cta {
+  font-family: inherit;
+  font-size: 18px;
+  color: #fff;
+  background: linear-gradient(135deg, #ef7d9b, #e85d8a);
+  border: none;
+  border-radius: 999px;
+  padding: 15px 30px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(232, 93, 138, .4);
+  transition: all .18s ease;
+  width: 100%;
+  margin-top: 24px;
+}
+.cta:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(232, 93, 138, .5); }
+.cta:disabled { opacity: .45; cursor: default; box-shadow: none; }
+.cta-row { margin-top: 24px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.cta-row .cta { margin-top: 0; }
+.dodge {
+  font-family: inherit;
+  font-size: 14px;
+  color: #b78a97;
+  background: var(--card);
+  border: 1.5px dashed var(--pink-soft);
+  border-radius: 999px;
+  padding: 8px 18px;
+  cursor: pointer;
+  position: relative;
+  transition: left .22s ease, top .22s ease;
+}
+.back {
+  font-family: inherit;
+  font-size: 14px;
+  color: #b78a97;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 16px;
+}
+.back:hover { color: var(--pink); }
+.hint { font-size: 13px; color: #b78a97; margin-top: 14px; min-height: 18px; }
+.summary {
+  background: var(--cream);
+  border: 1.5px solid var(--pink-soft);
+  border-radius: 18px;
+  padding: 18px 16px;
+  font-size: 17px;
+  line-height: 1.7;
+  margin-bottom: 6px;
+  text-align: left;
+}
+.summary b { color: var(--pink); font-weight: normal; }
+.error { color: #c0392b; font-size: 14px; margin-top: 12px; }
+.confetti {
+  position: fixed;
+  top: -40px;
+  font-size: 26px;
+  z-index: 5;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+@keyframes fall {
+  to { transform: translateY(115vh) rotate(340deg); opacity: .2; }
+}
+</style>
+</head>
+<body>
+<div class="bg" id="bg"></div>
+
+<div class="wrap">
+  <div class="dots" id="dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="card">
+
+    <section class="page active" id="page1">
+      <h1>Привет, Полина!</h1>
+      <p class="lead">Тут кое-что для тебя.</p>
+      <button class="cta" data-next>Открыть 💌</button>
+    </section>
+
+    <section class="page" id="page2">
+      <div class="stamp">🥺</div>
+      <h1>Пойдёшь со мной?</h1>
+      <p class="lead">На этой неделе. Выберешь, что делаем и когда — я подстроюсь под тебя.</p>
+      <div class="cta-row">
+        <button class="cta" data-next>Да, идём 💛</button>
+        <button class="dodge" id="dodgeBtn">Нет 🙈</button>
+      </div>
+    </section>
+
+    <section class="page" id="page3">
+      <div class="stamp">🎬</div>
+      <h1>Что делаем?</h1>
+      <p class="lead">Выбирай, что тебе больше по душе — можно несколько.</p>
+      <div class="chips" id="activityChips"></div>
+      <button class="cta" id="activityNext" data-next disabled>Дальше →</button>
+      <div class="hint" id="activityHint">Можно выбрать несколько</div>
+      <button class="back" data-back>← назад</button>
+    </section>
+
+    <section class="page" id="page4">
+      <div class="stamp">📅</div>
+      <h1>Выбери день</h1>
+      <p class="lead">Любой из этих дней — я подстроюсь под тебя.</p>
+      <div class="chips" id="dayChips"></div>
+      <button class="cta" id="dayNext" data-next disabled>Дальше →</button>
+      <div class="hint" id="dayHint">Нажми на день, который тебе удобен</div>
+      <button class="back" data-back>← назад</button>
+    </section>
+
+    <section class="page" id="page5">
+      <div class="stamp">🌙</div>
+      <h1>Примерное время</h1>
+      <p class="lead">Не обязательно точно — просто когда тебе комфортнее.</p>
+      <div class="chips" id="timeChips"></div>
+      <input type="text" id="customTime" class="hidden" maxlength="60" placeholder="Напиши, как тебе удобно, например «после 19:00»">
+      <button class="cta" id="timeNext" data-next disabled>Дальше →</button>
+      <button class="back" data-back>← назад</button>
+    </section>
+
+    <section class="page" id="page6">
+      <div class="stamp">🍰</div>
+      <h1>А что по еде?</h1>
+      <p class="lead">Напиши, чего хочется: кофе и десерт, суши, пицца — или что-то своё. Можно оставить пустым, решим на месте.</p>
+      <input type="text" id="food" maxlength="200" placeholder="Например: хочу какао и чизкейк 🍰">
+      <button class="cta" data-next>Дальше →</button>
+      <button class="back" data-back>← назад</button>
+    </section>
+
+    <section class="page" id="page7">
+      <div class="stamp">✨</div>
+      <h1>Почти всё!</h1>
+      <p class="lead">Проверь, что получилось:</p>
+      <div class="summary" id="summary"></div>
+      <button class="cta" id="sendBtn">Отправить мне 💌</button>
+      <div class="hint">Я получу это сообщение и буду ждать ❤️</div>
+      <div class="error hidden" id="errorBox"></div>
+      <button class="back" data-back>← назад</button>
+    </section>
+
+    <section class="page" id="pageDone">
+      <div class="stamp">🎉</div>
+      <h1>Ура!</h1>
+      <p class="lead" id="doneText"></p>
+      <p class="lead">Я уже предвкушаю. До встречи! ❤️</p>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  botToken: '9080353860:AAFde8BfqS8aWib-ZPYTlzz4IiL_IX9le2I',
+  chatId: '949424589',
+  herName: 'Полина',
+  yourName: ''
+};
+
+const ACTIVITIES = [
+  { id: 'walk', label: 'Прогулка 🚶‍♀️' },
+  { id: 'cinema', label: 'Кино 🎬' },
+  { id: 'rink', label: 'Каток ⛸️' },
+  { id: 'karting', label: 'Картинг 🏎️' }
+];
+const DAYS = [
+  { label: 'Среда', date: '25 ноября', value: 'ср, 25 ноября' },
+  { label: 'Четверг', date: '26 ноября', value: 'чт, 26 ноября' },
+  { label: 'Пятница', date: '27 ноября', value: 'пт, 27 ноября' },
+  { label: 'Суббота', date: '28 ноября', value: 'сб, 28 ноября' },
+  { label: 'Воскресенье', date: '29 ноября', value: 'вс, 29 ноября' }
+];
+const TIME_SLOTS = [
+  { id: 'morning', label: 'Утро ☀️', sub: '10:00–12:00' },
+  { id: 'day', label: 'День 🌤', sub: '12:00–17:00' },
+  { id: 'evening', label: 'Вечер 🌙', sub: '17:00–21:00' },
+  { id: 'custom', label: 'Свой вариант ✏️', sub: '' }
+];
+const DODGE_LABELS = ['Нет 🙈', 'Неа 🙅‍♀️', 'Не хочу 😝', 'Мимо 😌', 'Даже не проси 🥺', 'Ну уж нет 😤'];
+
+const state = { activity: [], day: null, time: null, page: 1 };
+
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = page === 'done' ? document.getElementById('pageDone') : document.getElementById('page' + page);
+  target.classList.add('active');
+  state.page = page;
+  const dots = document.querySelectorAll('#dots span');
+  dots.forEach((d, i) => d.classList.toggle('filled', page === 'done' || i < page));
+  document.getElementById('dodgeBtn').classList.toggle('hidden', page !== 2);
+  if (page === 7) renderSummary();
+}
+
+function buildActivities() {
+  const wrap = document.getElementById('activityChips');
+  ACTIVITIES.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = a.label;
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('selected');
+      if (btn.classList.contains('selected')) state.activity.push(a.label);
+      else state.activity = state.activity.filter(x => x !== a.label);
+      document.getElementById('activityNext').disabled = state.activity.length === 0;
+      document.getElementById('activityHint').textContent = state.activity.length ? 'Отличный выбор 💛' : 'Можно выбрать несколько';
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function buildDays() {
+  const wrap = document.getElementById('dayChips');
+  DAYS.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.innerHTML = d.label + '<small>' + d.date + '</small>';
+    btn.addEventListener('click', () => {
+      wrap.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.day = d.value;
+      document.getElementById('dayNext').disabled = false;
+      document.getElementById('dayHint').textContent = 'Отличный выбор 💛';
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function buildTimes() {
+  const wrap = document.getElementById('timeChips');
+  TIME_SLOTS.forEach(slot => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.innerHTML = slot.label + (slot.sub ? '<small>' + slot.sub + '</small>' : '');
+    btn.addEventListener('click', () => {
+      wrap.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.time = slot.id;
+      document.getElementById('customTime').classList.toggle('hidden', slot.id !== 'custom');
+      refreshTimeNext();
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function refreshTimeNext() {
+  const ok = state.time && (state.time !== 'custom' || document.getElementById('customTime').value.trim());
+  document.getElementById('timeNext').disabled = !ok;
+}
+
+function timeText() {
+  if (state.time === 'custom') return document.getElementById('customTime').value.trim();
+  const slot = TIME_SLOTS.find(s => s.id === state.time);
+  return slot ? slot.label + ' (' + slot.sub + ')' : '';
+}
+
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderSummary() {
+  const food = document.getElementById('food').value.trim();
+  let html = '🎯 Занятие: <b>' + esc(state.activity.join(', ')) + '</b><br>';
+  html += '📅 День: <b>' + esc(state.day) + '</b><br>';
+  html += '🕰 Время: <b>' + esc(timeText()) + '</b>';
+  if (food) html += '<br>🍰 Еда: <b>' + esc(food) + '</b>';
+  document.getElementById('summary').innerHTML = html;
+}
+
+function spawnBg() {
+  const bg = document.getElementById('bg');
+  const emojis = ['💅', '👠'];
+  for (let i = 0; i < 26; i++) {
+    const s = document.createElement('span');
+    s.textContent = emojis[i % emojis.length];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.fontSize = 24 + Math.random() * 22 + 'px';
+    s.style.animationDuration = 8 + Math.random() * 9 + 's';
+    s.style.animationDelay = Math.random() * 14 + 's';
+    bg.appendChild(s);
+  }
+}
+
+function confetti() {
+  const emojis = ['💅', '👠', '✨', '🎉', '💛'];
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('span');
+    s.className = 'confetti';
+    s.textContent = emojis[i % emojis.length];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDuration = 2.2 + Math.random() * 2.5 + 's';
+    s.style.animationDelay = Math.random() * 0.8 + 's';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 6000);
+  }
+}
+
+async function sendToTelegram(text) {
+  if (!CONFIG.botToken || !CONFIG.chatId) return true;
+  const res = await fetch('https://api.telegram.org/bot' + CONFIG.botToken + '/sendMessage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: CONFIG.chatId, text: text })
+  });
+  const data = await res.json();
+  return data.ok === true;
+}
+
+async function submit() {
+  const btn = document.getElementById('sendBtn');
+  const err = document.getElementById('errorBox');
+  btn.disabled = true;
+  btn.textContent = 'Отправляю… 💌';
+  err.classList.add('hidden');
+  const food = document.getElementById('food').value.trim();
+  const when = state.day + ' · ' + timeText();
+  let text = '💌 ' + CONFIG.herName + ' сказала да!\nЧто: ' + state.activity.join(', ') + '\nКогда: ' + when;
+  if (food) text += '\nЕда: ' + food;
+  try {
+    const ok = await sendToTelegram(text);
+    if (!ok) throw new Error('telegram');
+    document.getElementById('doneText').textContent = state.activity.join(', ') + ' ' + when + ' — уже в моём календаре.';
+    goTo('done');
+    confetti();
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Отправить мне 💌';
+    err.textContent = 'Не получилось отправить 😢 Попробуй ещё разок';
+    err.classList.remove('hidden');
+  }
+}
+
+function initDodge() {
+  const btn = document.getElementById('dodgeBtn');
+  let count = 0;
+  let placed = false;
+  const place = (x, y) => {
+    btn.style.left = x + 'px';
+    btn.style.top = y + 'px';
+  };
+  const move = () => {
+    count++;
+    btn.textContent = DODGE_LABELS[count % DODGE_LABELS.length];
+    if (!placed) {
+      btn.style.position = 'fixed';
+      btn.style.zIndex = 10;
+      placed = true;
+    }
+    const w = btn.offsetWidth;
+    const h = btn.offsetHeight;
+    place(
+      8 + Math.random() * Math.max(1, window.innerWidth - w - 16),
+      8 + Math.random() * Math.max(1, window.innerHeight - h - 16)
+    );
+  };
+  btn.addEventListener('pointerenter', move);
+  btn.addEventListener('click', move);
+  window.addEventListener('resize', () => {
+    if (!placed) return;
+    const x = Math.min(parseFloat(btn.style.left) || 0, window.innerWidth - btn.offsetWidth - 8);
+    const y = Math.min(parseFloat(btn.style.top) || 0, window.innerHeight - btn.offsetHeight - 8);
+    place(Math.max(8, x), Math.max(8, y));
+  });
+}
+
+document.querySelectorAll('[data-next]').forEach(btn => {
+  btn.addEventListener('click', () => goTo(state.page + 1));
+});
+document.querySelectorAll('[data-back]').forEach(btn => {
+  btn.addEventListener('click', () => goTo(state.page - 1));
+});
+document.getElementById('customTime').addEventListener('input', refreshTimeNext);
+document.getElementById('sendBtn').addEventListener('click', submit);
+
+buildActivities();
+buildDays();
+buildTimes();
+spawnBg();
+initDodge();
+goTo(1);
+</script>
+</body>
+</html>
